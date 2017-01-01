@@ -53,6 +53,8 @@ function MetaData() {
   this.filename = null;
   // expirydate of the entry
   this.expires = null;
+  // created of the entry
+  this.created = null;
   // size of the current entry
   this.size = null;
 }
@@ -178,6 +180,7 @@ DiskStore.prototype.set = function(key, val, options, cb) {
     key: key,
     value: val,
     expires: Date.now() + ((ttl || 60) * 1000),
+    created: Date.now(),
     filename: this.options.path + '/cache_' + uuid.v4() + '.dat'
   });
 
@@ -373,7 +376,7 @@ DiskStore.prototype.get = function(key, options, cb) {
 /**
  * get key createDate from the cache
  */
-DiskStore.prototype.getDate = function(key, options, cb) {
+DiskStore.prototype.ttl = function(key, options, cb) {
 
   if (typeof options === 'function') {
     cb = options;
@@ -390,41 +393,8 @@ DiskStore.prototype.getDate = function(key, options, cb) {
     return cb(null, null);
   }
 
-  cb(null, data.expires);
+  cb(null, data);
 
-  // try to read the file
-  // try {
-
-  //   fs.readFile(data.filename, function(err, fileContent) {
-  //     if (err) {
-  //       return cb(err);
-  //     }
-  //     var reviveBuffers = this.options.reviveBuffers;
-  //     if (this.options.zip) {
-  //       zlib.unzip(fileContent, function(err, buffer) {
-  //         var diskdata;
-  //         if (reviveBuffers) {
-  //           diskdata = JSON.parse(buffer, bufferReviver);
-  //         } else {
-  //           diskdata = JSON.parse(buffer);
-  //         }
-  //         cb(null, diskdata.value);
-  //       });
-  //     } else {
-  //       var diskdata;
-  //       if (reviveBuffers) {
-  //         diskdata = JSON.parse(fileContent, bufferReviver);
-  //       } else {
-  //         diskdata = JSON.parse(fileContent);
-  //       }
-  //       cb(null, diskdata.value);
-  //     }
-  //   }.bind(this));
-
-  // } catch (err) {
-
-  //   cb(err);
-  // }
 
 };
 
